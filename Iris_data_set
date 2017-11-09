@@ -1,0 +1,35 @@
+#IRIS TRAINING DATA
+View(iris)
+#i have to find random rows
+row_index=sample(1:nrow(iris),0.8*nrow(iris))
+#function to convert it into normalization
+d=function(x){((x-min(x))/(max(x)-min(x)))}
+install.packages("class")
+library("class")
+#now i need to apply normalization on the data frame
+#and to normalize the whole data we will use lapply function
+norm_data=lapply(iris[,-5],d)
+class(norm_data)
+#lapply returns a list so convert it back into data frame
+norm_data=as.data.frame(norm_data)
+#now i need to select the train data and test data
+#for that i need it to be random
+#i have selected some random values using sample function above
+#sample function just takes two parameter one total value and second how much to be returned
+train_data_i=norm_data[row_index,]
+test_data_i=norm_data[-row_index,]
+#here in the knn model the third argument is the prediction column which will be predicted
+#by checking the result of the training data set
+pred_model=knn(train_data_i,test_data_i,iris[row_index,5],k=2)
+#now my prediction model is storing the result that is 5th column for test data
+predicted_table=table(pred_model,iris[-row_index,5])
+#method to find the percentage
+#count all the rows in the test model
+#then add all the diagonal element from the table
+#find the percentage
+a=0.2*nrow(iris)
+#it gives me row count of iris
+diag_element=diag(predicted_table)
+accuracy_iris=(sum(diag_element)/a)*100
+accuracy_iris
+#the accuracy of model has been predicted
